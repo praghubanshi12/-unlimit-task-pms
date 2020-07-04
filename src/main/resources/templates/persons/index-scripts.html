@@ -1,0 +1,81 @@
+<script th:inline="javascript">
+    // get value of country if present in the url via controller for loadin table
+    var $country = /*[[${country}]]*/ null;
+    var $url = /*[[${url}]]*/ null; 
+</script>
+
+<script>
+    $(document).ready(function () {
+        var $pageURL = "/" + $url + "/table";
+        var $requestParam = "";
+
+        // check is country is present in url via controller
+        if ($country != null) {
+            $requestParam = "?country=" + $country;
+        }
+
+        loadTable($pageURL + $requestParam)
+
+        //open person details modal from detail-modal.html
+        $(document).on("click", ".btn-view-person-details", function () {
+            personId = $(this).attr("rel");
+            $("#detail-modal").find(".modal-title").html($(this).attr("name"));
+
+            //firstly clear and fill the details modal from person id 
+            $("#detail-modal").find(".dl-horizontal").find("div").remove();
+
+            $.getJSON("/persons/details/" + personId + "/json", function (data) {
+                $("#detail-modal").find(".dl-horizontal")
+                    .append("<div class = 'col-md-6'>" +
+                        "<dt>Event Name</dt> <dd>" + data.eventName + "</dd>" +
+                        "<dt>Scanned Date</dt> <dd>" + data.scannedDate + "</dd>" +
+                        "<dt>Scanned Time</dt> <dd>" + data.scannedTime + "</dd>" +
+                        "<dt>Job Title</dt> <dd>" + data.jobTitle + "</dd>" +
+                        "<dt>Address 1</dt> <dd>" + data.address1 + "</dd>" +
+                        "<dt>Address 2</dt> <dd>" + data.address2 + "</dd>" +
+                        "<dt>Address 3</dt> <dd>" + data.address3 + "</dd>" +
+                        "<dt>City</dt> <dd>" + data.city + "</dd>" +
+                        "<dt>State Id</dt> <dd>" + data.stateId + "</dd>" +
+                        "<dt>Zip</dt> <dd>" + data.zip + "</dd> </div>" +
+                        "<div class = 'col-md-6'>" +
+                        "<dt>Country</dt> <dd>" + data.country + "</dd>" +
+                        "<dt>Phone Number</dt> <dd>" + data.phoneNumber + "</dd>" +
+                        "<dt>Phone Number 2</dt> <dd>" + data.phoneNumber2 + "</dd>" +
+                        "<dt>Fax Number</dt> <dd>" + data.faxNumber + "</dd>" +
+                        "<dt>Question</dt> <dd>" + data.question + "</dd>" +
+                        "<dt>Response</dt> <dd>" + data.response + "</dd>" +
+                        "<dt>Note</dt> <dd>" + data.note + "</dd>" +
+                        "<dt>Collateral</dt> <dd>" + data.collateral + "</dd>" +
+                        "<dt>Qualified/Disqualified</dt> <dd>" + data.qualified + "</dd>" +
+                        "<dt>Scanned By</dt> <dd>" + data.scannedBy + "</dd> </div>"
+                    );
+            });
+            $("#detail-modal").modal();
+        });
+
+        $("#select-filter-btn").change(function () {
+            loadTable($pageURL + "/scannedBy/" + $(this).val() + $requestParam);
+        })
+
+        sortQualified("#check-qualified-btn", "yes")
+        sortQualified("#check-disqualified-btn", "no")
+    });
+
+    //on qualify/disqualify checkbox uncheck; hide the associated rows
+    function sortQualified(el, isQualified) {
+        $(document).on("change", el, function () {
+            $this = $(this);
+            $("td[isQualified = " + isQualified + "]").each(function () {
+                $(this).parents("tr").attr("hidden", !$this.prop("checked"));
+            });
+        });
+    }
+
+    //render data from table.html file via the controller path(pageURL) dynamically
+    function loadTable(pageURL) {
+        $("#table-block").html("<h1>Loading...</h1>");
+        $.get(pageURL, function (data) {
+            $("#table-block").html(data);
+        })
+    }
+</script>

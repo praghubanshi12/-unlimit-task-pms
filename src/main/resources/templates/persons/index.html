@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        thead tr th,
+        td {
+            text-align: center;
+        }
+    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+    <title>PMS-Microsoft</title>
+</head>
+
+<body>
+    <!-- give heading checking if country=USA only or all countries from url-->
+    <h1 style="text-align: center;">2019 Microsoft Inspire event Attendees
+        <div th:if="${country} != null">
+            <span th:text="'(' + ${country} + ' only)'"></span>
+            <a class="btn btn-primary btn-xl" th:href="${url}">Show all Countries</a>
+        </div>
+
+        <div th:unless="${country} != null">
+            <a class="btn btn-primary btn-xl" th:href="${url} + '?country=United States'">Show USA Only</a>
+        </div>
+    </h1>
+    <br>
+    <div class="container">
+        <div class="box">
+            <div class="box-header col-sm-4">
+                <div class="form-group">
+                    <!-- get records categorized by scannedBy field(scannedByGroupedPersons) with count from controller -->
+                    <label for="select-filter-btn">Filter (Scanned By) : </label>
+                    <select id="select-filter-btn" class="form-control" style="display: inline-block;">
+                        <option value="All">All</option>
+                        <option th:each="personDetail: ${scannedByGroupedPersons}"
+                            th:text="${personDetail[0] + '(' + personDetail[1] + ')'}" th:value="${personDetail[0]}">
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="box-body">
+                <!-- person information table block; rendered from index-scripts -->
+                <div id="table-block">
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div th:replace="persons/detail-modal"></div>
+</body>
+
+<div th:replace="persons/index-scripts"></div>
+
+</html>

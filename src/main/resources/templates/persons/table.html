@@ -1,0 +1,33 @@
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Event Name</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Email 2</th>
+            <th>
+                Qualified <input type="checkbox" id="check-qualified-btn" checked> /
+                Disqualified <input type="checkbox" id="check-disqualified-btn" checked>
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        <tr th:each="person: ${persons}">
+            <td th:text="${person.details.eventName}"></td>
+            <td th:text="${person.firstName} + ' ' + ${person.middleInitial} + ' ' +${person.lastName}">
+            </td>
+            <td th:text="${person.email}"></td>
+            <td th:text="${person.email2}"></td>
+            <td class="td-qualified" th:text="${person.details.qualified}"
+                th:isQualified="(${person.details.qualified} == 'qualified') ? yes : no"></td>
+            <!-- view detail-modal button -->
+            <td>
+                <button type="button" class="btn btn-xs btn-info btn-view-person-details" th:rel="${person.id}"
+                    th:name="${person.firstName} + ' ' + ${person.middleInitial} + ' ' +${person.lastName}">
+                    <i class="fa fa-w fa-eye"></i> View Details</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
